@@ -1,0 +1,7 @@
+rest      = true
+fork      = true
+logappend = true
+logpath   = $BASEDIR/logs/$INSTANCE.log
+configsvr = true
+#keyFile   = $BASEDIR/cluster.key
+quiet     = true

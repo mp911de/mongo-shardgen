@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# mongod - Startup script for mongod
+
+### BEGIN INIT INFO
+# Provides:          mongod
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: Start/stop mongo daemon
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+# mongod will read mongod.conf for configuration settings
+
+# Add variable to support multiple instances of mongod
+# The instance name is by default the name of this init script
+# In this way another instance can be created by just copying this init script
+# and creating a config file with the same name.
+
+INSTANCE=$(basename $0)
+MONGO_BASE_DIR=/opt/mongo
+
+INSTANCE_DIR=${MONGO_BASE_DIR}/instances/${INSTANCE}
+PID_FILE=${INSTANCE_DIR}/mongod.pid
+OPTIONS=" --quiet --config ${INSTANCE_DIR}/mongod.conf --dbpath=${INSTANCE_DIR}/data --pidfilepath ${PID_FILE}"
+
+MONGO_BIN=${MONGO_BASE_DIR}/bin/mongod
+MONGO_ULIMIT=8192
+
+MONGO_USER=mongod
+MONGO_GROUP=mongod
+
+if [ `touch ${INSTANCE_DIR}/testfile 2> /dev/null; echo "$?"` -eq 0 ]; then
+	OK=1
+	rm ${INSTANCE_DIR}/testfile
+else
+	echo "FAIL: Insufficent permissions"
+	exit 1
+fi
+
+
+
+start()
+{
+  echo -n $"Starting mongod: "
+  start-stop-daemon --start --user "${MONGO_USER}" --startas ${MONGO_BIN} -- ${OPTIONS}
+  RETVAL=$?
+  echo
+}
+
+stop()
+{
+  echo -n $"Stopping mongod: "
+  start-stop-daemon --stop --pidfile ${PID_FILE} --exec ${MONGO_BIN}
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && rm -f ${PID_FILE}
+}
+
+restart () {
+  stop
+  start
+}
+
+ulimit -n $MONGO_ULIMIT
+RETVAL=0
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  status)
+    status_of_proc -p ${PID_FILE} ${MONGO_BIN} "${INSTANCE} process" 
+    RETVAL=$?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|restart}"
+    RETVAL=1
+esac
+
+exit $RETVAL

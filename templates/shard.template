@@ -1,0 +1,7 @@
+fork      = true
+port      = $SHARD_PORT
+logappend = true
+logpath   = $BASEDIR/logs/$INSTANCE.log
+replSet   = $REPLSET
+shardsvr  = true
+#keyFile   = $BASEDIR/cluster.key

@@ -1,0 +1,6 @@
+fork      = true
+logappend = true
+logpath   = $BASEDIR/logs/mongos-config.log
+#keyFile   = $BASEDIR/cluster.key
+configdb  = $CONFIG_SERVERS
+quiet     = true
