@@ -5,8 +5,8 @@ mkdir -p $BASEDIR/logs
 cp -R -f mongo* $BASEDIR/instances
 mv -f init.d/* /etc/init.d
 cp cluster.key $BASEDIR/instances
-chown -R mongod:mongod $BASEDIR/instances
-chown -R mongod:mongod $BASEDIR/logs
+chown -R hadoop:hadoop $BASEDIR/instances
+chown -R hadoop:hadoop $BASEDIR/logs
 rm -Rf $BASEDIR/logs/*
 chmod a+x /etc/init.d/mongos
 chmod a+x /etc/init.d/mongod

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# mongos - Startup script for mongos
+# mongod - Startup script for mongod
 
 ### BEGIN INIT INFO
-# Provides:          mongos
+# Provides:          mongod
 # Required-Start:    $local_fs $remote_fs $network $syslog $named
 # Required-Stop:     $local_fs $remote_fs $network $syslog $named
 # Default-Start:     2 3 4 5
@@ -14,25 +14,25 @@
 
 . /lib/lsb/init-functions
 
-# mongos will read mongos.conf for configuration settings
+# mongod will read mongod.conf for configuration settings
 
-# Add variable to support multiple instances of mongos
+# Add variable to support multiple instances of mongod
 # The instance name is by default the name of this init script
 # In this way another instance can be created by just copying this init script
 # and creating a config file with the same name.
 
 INSTANCE=$(basename $0)
-MONGO_BASE_DIR=/opt/mongo
+MONGO_BASE_DIR=/opt/hadoop/mongo
 
 INSTANCE_DIR=${MONGO_BASE_DIR}/instances/${INSTANCE}
-PID_FILE=${INSTANCE_DIR}/mongos.pid
-OPTIONS=" --quiet --config ${INSTANCE_DIR}/mongos.conf --pidfilepath ${PID_FILE}"
+PID_FILE=${INSTANCE_DIR}/mongod.pid
+OPTIONS=" --quiet --config ${INSTANCE_DIR}/mongod.conf --dbpath=${INSTANCE_DIR}/data --pidfilepath ${PID_FILE}"
 
-MONGO_BIN=${MONGO_BASE_DIR}/bin/mongos
+MONGO_BIN=${MONGO_BASE_DIR}/bin/mongod
 MONGO_ULIMIT=8192
 
-MONGO_USER=mongod
-MONGO_GROUP=mongod
+MONGO_USER=mongo
+MONGO_GROUP=mongo
 
 if [ `touch ${INSTANCE_DIR}/testfile 2> /dev/null; echo "$?"` -eq 0 ]; then
 	OK=1
@@ -43,9 +43,10 @@ else
 fi
 
 
+
 start()
 {
-  echo -n $"Starting mongos: "
+  echo -n $"Starting mongod: "
   start-stop-daemon --start --user "${MONGO_USER}" --startas ${MONGO_BIN} -- ${OPTIONS}
   RETVAL=$?
   echo
@@ -53,7 +54,7 @@ start()
 
 stop()
 {
-  echo -n $"Stopping mongos: "
+  echo -n $"Stopping mongod: "
   start-stop-daemon --stop --pidfile ${PID_FILE} --exec ${MONGO_BIN}
   RETVAL=$?
   echo

@@ -43,8 +43,8 @@ do
 	scp $@ $SERVER_PATH/stop-server.sh ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/
 	scp $@ $INSTANCE_PATH/mongod.conf ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/$INSTANCE
 	scp $@ $SERVER_PATH/mongos-config/mongos.conf ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/mongos-config
-	scp $@ init.d/mongod ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/init.d/
-	scp $@ init.d/mongos ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/init.d/
+	scp $@ init.d-debian/mongod ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/init.d/
+	scp $@ init.d-debian/mongos ${DEPLOY_SSH_USER}@${server}:$MONGO_CONFIG_DIR/init.d/
 	scp $@ $OUTPUT_PATH/finalize-install.sh ${DEPLOY_SSH_USER}@${server}:$MONGO_SHARD_DIR/
 	scp $@ $SERVER_PATH/start-all-init.sh ${DEPLOY_SSH_USER}@${server}:$MONGO_SHARD_DIR/
 	scp $@ $SERVER_PATH/stop-all-init.sh ${DEPLOY_SSH_USER}@${server}:$MONGO_SHARD_DIR/
@@ -64,7 +64,7 @@ do
 		SERVER_PATH=$OUTPUT_PATH/${server}
 		ssh $@ ${DEPLOY_SSH_USER}@${server} "mkdir -p $MONGO_SHARD_DIR/init.d"
 	
-		scp $@ init.d/mongod ${DEPLOY_SSH_USER}@${server}:$MONGO_SHARD_DIR/init.d/
+		scp $@ init.d-debian/mongod ${DEPLOY_SSH_USER}@${server}:$MONGO_SHARD_DIR/init.d/
 	
 		for (( c=1; c<=$SHARD_COUNT_PER_SERVER; c++ ))
 		do
